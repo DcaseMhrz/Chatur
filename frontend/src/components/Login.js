@@ -6,21 +6,62 @@ import {
   Input,
   InputGroup,
   InputRightElement,
+  useToast,
   VStack,
 } from "@chakra-ui/react";
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [show, setShow] = useState(false);
+  const toast = useToast();
+  const [loading, setloading] = useState(false);
+  const navigate = useNavigate();
 
   const setCreds = () => {
     setEmail("guest@guest.com");
     setPassword("guest123");
   };
-  const submitLogin = () => {
-    console.log(email);
+  const submitLogin = async () => {
+    if (!email || !password) {
+      toast({
+        title: "Please Fill all the fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+      return;
+    }
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "http://localhost:5000/api/user/login",
+        {
+          email,
+          password,
+        },
+        config
+      );
+      console.log(data);
+      setloading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Login Failed",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+    }
   };
 
   return (
@@ -64,6 +105,7 @@ const Login = () => {
           width={"100%"}
           type="submit"
           onClick={submitLogin}
+          isLoading={loading}
         >
           Login
         </Button>

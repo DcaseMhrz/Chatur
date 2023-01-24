@@ -7,28 +7,125 @@ import {
   InputGroup,
   InputRightElement,
   VStack,
+  useToast,
 } from "@chakra-ui/react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const Signup = () => {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
   const [cpassword, setCpassword] = useState("");
   const [show, setShow] = useState(false);
+  const [loading, setloading] = useState(false);
+  const [pic, setPic] = useState();
+  const toast = useToast();
+  const navigate = useNavigate();
 
-  const submitSignup = () => {
-    console.log(email);
+  const submitSignup = async () => {
+    setloading(true);
+    if (!name || !email || !password || !cpassword) {
+      toast({
+        title: "Please Fill all the fields",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+      return;
+    }
+    if (password !== cpassword) {
+      toast({
+        title: "Passwords donot match",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+      return;
+    }
+    console.log(name, email, password, pic);
+    try {
+      const config = {
+        headers: {
+          "Content-type": "application/json",
+        },
+      };
+      const { data } = await axios.post(
+        "http://localhost:5000/api/user/register",
+        {
+          name,
+          email,
+          password,
+          pic,
+        },
+        config
+      );
+      console.log(data);
+      setloading(false);
+      navigate("/chats");
+    } catch (error) {
+      toast({
+        title: "Sign Up Failed",
+        status: "error",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+    }
   };
-  const postDetails = (pics) => {};
+  const postDetails = (pics) => {
+    setloading(true);
+    if (pics === undefined) {
+      toast({
+        title: "Please select an image.",
+        description: "No Image selected",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+      return;
+    }
+    if (pics.type === "image/jpeg" || pics.type === "image/png") {
+      const data = new FormData();
+      data.append("file", pics);
+      data.append("upload_preset", "chatur");
+      fetch("https://api.cloudinary.com/v1_1/dbbocsxba/upload", {
+        method: "POST",
+        body: data,
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setPic(data.url.toString());
+          setloading(false);
+        })
+        .catch((err) => {
+          console.log(err);
+          setloading(false);
+        });
+    } else {
+      toast({
+        title: "Please select an image.",
+        description: "No Image selected",
+        status: "warning",
+        duration: 5000,
+        isClosable: true,
+      });
+      setloading(false);
+    }
+  };
   return (
     <VStack spacing={4}>
       <FormControl id="name" isRequired>
         <FormLabel>Full Name</FormLabel>
         <Input
-          value={email}
+          value={name}
           type="text"
           placeholder="Enter full name"
           onChange={(e) => {
-            setEmail(e.target.value);
+            setName(e.target.value);
           }}
         />
       </FormControl>
@@ -65,11 +162,11 @@ const Signup = () => {
           </InputRightElement>
         </InputGroup>
       </FormControl>
-      <FormControl id="password " isRequired>
+      <FormControl id="cpassword " isRequired>
         <FormLabel>Confirm Password</FormLabel>
         <InputGroup>
           <Input
-            value={password}
+            value={cpassword}
             type={show ? "text" : "password"}
             placeholder="Confirm your password"
             onChange={(e) => {
@@ -104,6 +201,7 @@ const Signup = () => {
           width={"100%"}
           type="submit"
           onClick={submitSignup}
+          isLoading={loading}
         >
           Sign Up
         </Button>
