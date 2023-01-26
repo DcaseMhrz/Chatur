@@ -1,7 +1,6 @@
 import {
   Button,
   FormControl,
-  FormHelperText,
   FormLabel,
   Input,
   InputGroup,
@@ -52,6 +51,7 @@ const Login = () => {
       );
       console.log(data);
       setloading(false);
+      localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/chats");
     } catch (error) {
       toast({
