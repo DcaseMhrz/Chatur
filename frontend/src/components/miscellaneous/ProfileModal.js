@@ -15,7 +15,7 @@ import {
 } from "@chakra-ui/react";
 import React from "react";
 
-const ProfileModal = (props, children) => {
+const ProfileModal = (props) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
   return (
     <>

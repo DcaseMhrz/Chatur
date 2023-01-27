@@ -5,8 +5,9 @@ import React, { useContext, useEffect, useState } from "react";
 import { getSender } from "../../config/ChatLogics";
 import ChatContext from "../../Context/ChatContext";
 import ChatLoading from "../ChatLoading";
+import GroupChatModal from "./GroupChatModal";
 
-const MyChats = () => {
+const MyChats = (props) => {
   const context = useContext(ChatContext);
   const { user, setSelectedChat, chats, setChats, selectedChat } = context;
   const [loggedUser, setLoggedUser] = useState();
@@ -39,7 +40,7 @@ const MyChats = () => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
     console.log(chats);
-  }, []);
+  }, [props.fetchAgain]);
 
   return (
     <Box
@@ -63,13 +64,15 @@ const MyChats = () => {
         alignItems="center"
       >
         My Chats
-        <Button
-          display={"flex"}
-          fontSize={{ base: "17px", md: "10px", lg: "17px" }}
-          rightIcon={<AddIcon />}
-        >
-          Group Chat
-        </Button>
+        <GroupChatModal>
+          <Button
+            display={"flex"}
+            fontSize={{ base: "17px", md: "10px", lg: "17px" }}
+            rightIcon={<AddIcon />}
+          >
+            Group Chat
+          </Button>
+        </GroupChatModal>
       </Box>
       <Box
         display={"flex"}
@@ -95,7 +98,6 @@ const MyChats = () => {
                   borderRadius="lg"
                   key={chat._id}
                 >
-                  Hello
                   <Text>
                     {!chat.isGroupChat
                       ? getSender(loggedUser, chat.users)
