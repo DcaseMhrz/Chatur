@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import ChatContext from "./ChatContext";
 
 const ChatProvider = (props) => {
+  const HOST = "https://mdikesh.com.np/chaturapi";
   const [user, setUser] = useState();
   const [selectedChat, setSelectedChat] = useState();
   const [chats, setChats] = useState([]);
@@ -29,6 +30,7 @@ const ChatProvider = (props) => {
         setChats,
         notification,
         setNotification,
+        HOST,
       }}
     >
       {props.children}

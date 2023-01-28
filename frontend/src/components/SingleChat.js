@@ -19,7 +19,6 @@ import "./styles.css";
 import io from "socket.io-client";
 import loadinggif from "./animations/typing2.gif";
 
-const ENDPOINT = "http://localhost:5000";
 var socket, selectedChatCompare;
 
 const SingleChat = ({ fetchAgain, setFetchAgain }) => {
@@ -31,8 +30,14 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   const [isTyping, setIsTyping] = useState(false);
 
   const context = useContext(ChatContext);
-  const { user, selectedChat, setSelectedChat, notification, setNotification } =
-    context;
+  const {
+    user,
+    selectedChat,
+    setSelectedChat,
+    notification,
+    setNotification,
+    HOST,
+  } = context;
 
   const toast = useToast();
 
@@ -42,7 +47,9 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
   }, [selectedChat]);
 
   useEffect(() => {
-    socket = io(ENDPOINT);
+    socket = io("https://mdikesh.com.np/", {
+      path: "/chaturapi/socket.io/",
+    });
     socket.emit("setup", user);
     socket.on("connected", () => {
       setSocketConnected(true);
@@ -79,7 +86,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
       };
       setLoading(true);
       const { data } = await axios.get(
-        `/api/messages/${selectedChat._id}`,
+        `${HOST}/api/messages/${selectedChat._id}`,
         config
       );
       setMessages(data);
@@ -109,7 +116,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
         };
         setNewMessage("");
         const { data } = await axios.post(
-          "/api/messages",
+          `${HOST}/api/messages`,
           {
             content: newMessage,
             chatId: selectedChat,

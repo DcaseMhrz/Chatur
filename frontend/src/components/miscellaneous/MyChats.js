@@ -9,7 +9,8 @@ import GroupChatModal from "./GroupChatModal";
 
 const MyChats = (props) => {
   const context = useContext(ChatContext);
-  const { user, setSelectedChat, chats, setChats, selectedChat } = context;
+  const { user, setSelectedChat, chats, setChats, selectedChat, HOST } =
+    context;
   const [loggedUser, setLoggedUser] = useState();
 
   const toast = useToast();
@@ -21,7 +22,7 @@ const MyChats = (props) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get("api/chat/", config);
+      const { data } = await axios.get(`${HOST}/api/chat/`, config);
 
       setChats(data);
     } catch (error) {

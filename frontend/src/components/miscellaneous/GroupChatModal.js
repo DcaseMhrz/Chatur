@@ -30,7 +30,7 @@ const GroupChatModal = (props) => {
   const toast = useToast();
 
   const context = useContext(ChatContext);
-  const { user, chats, setChats } = context;
+  const { user, chats, setChats, HOST } = context;
 
   const handleGroup = (userToAdd) => {
     if (selectedUser.includes(userToAdd)) {
@@ -65,7 +65,10 @@ const GroupChatModal = (props) => {
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const { data } = await axios.get(`/api/user/search?q=${search}`, config);
+      const { data } = await axios.get(
+        `${HOST}/api/user/search?q=${search}`,
+        config
+      );
       setLoading(false);
       setSearchResults(data);
     } catch (error) {
@@ -99,7 +102,7 @@ const GroupChatModal = (props) => {
         },
       };
       const { data } = await axios.post(
-        `/api/chat/group`,
+        `${HOST}/api/chat/group`,
         {
           name: groupChatName,
           users: JSON.stringify(

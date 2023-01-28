@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import {
   Button,
   FormControl,
@@ -11,8 +11,11 @@ import {
 } from "@chakra-ui/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import ChatContext from "../Context/ChatContext";
 
 const Signup = () => {
+  const context = useContext(ChatContext);
+  const { HOST } = context;
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -52,7 +55,7 @@ const Signup = () => {
         },
       };
       const { data } = await axios.post(
-        "http://localhost:5000/api/user/register",
+        `${HOST}/api/user/register`,
         {
           name,
           email,

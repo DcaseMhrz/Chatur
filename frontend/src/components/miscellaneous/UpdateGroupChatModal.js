@@ -34,7 +34,7 @@ const UpdateGroupChatModal = (props) => {
   const toast = useToast();
 
   const context = useContext(ChatContext);
-  const { selectedChat, setSelectedChat, user } = context;
+  const { selectedChat, setSelectedChat, user, HOST } = context;
 
   const handleSearch = async (query) => {
     setSearch(query);
@@ -57,7 +57,10 @@ const UpdateGroupChatModal = (props) => {
             Authorization: `Bearer ${user.token}`,
           },
         };
-        const { data } = await axios.get(`api/user/search?q=${search}`, config);
+        const { data } = await axios.get(
+          `${HOST}/api/user/search?q=${search}`,
+          config
+        );
         setLoading(false);
         setSearchResult(data);
       } catch (error) {
@@ -92,7 +95,7 @@ const UpdateGroupChatModal = (props) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/groupremove",
+        `${HOST}/api/chat/groupremove`,
         {
           chatId: selectedChat._id,
           userid: user1._id,
@@ -145,7 +148,7 @@ const UpdateGroupChatModal = (props) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/groupadd",
+        `${HOST}/api/chat/groupadd`,
         {
           chatId: selectedChat._id,
           userid: user1._id,
@@ -180,7 +183,7 @@ const UpdateGroupChatModal = (props) => {
         },
       };
       const { data } = await axios.put(
-        "/api/chat/rename",
+        `${HOST}/api/chat/rename`,
         { chatId: selectedChat._id, ChatName: groupChatName },
         config
       );
