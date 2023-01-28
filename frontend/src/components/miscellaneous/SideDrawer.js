@@ -28,11 +28,21 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import ChatLoading from "../ChatLoading";
 import UserListItem from "../UserAvatar/UserListItem";
+import { getSender } from "../../config/ChatLogics";
+import { Effect } from "react-notification-badge";
+import NotificationBadge from "react-notification-badge";
 
 const SideDrawer = () => {
   const navigate = useNavigate();
   const context = useContext(ChatContext);
-  const { user, setSelectedChat, chats, setChats } = context;
+  const {
+    user,
+    setSelectedChat,
+    chats,
+    setChats,
+    notification,
+    setNotification,
+  } = context;
 
   const [search, setSearch] = useState("");
   const [searchResult, setSearchResult] = useState([]);
@@ -84,11 +94,11 @@ const SideDrawer = () => {
       setLoadingChat(true);
       const config = {
         headers: {
-          "content-type": "application/json",
+          "Content-type": "application/json",
           Authorization: `Bearer ${user.token}`,
         },
       };
-      const data = await axios.post("/api/chat/", { userid }, config);
+      const { data } = await axios.post("/api/chat/", { userid }, config);
 
       if (!chats.find((c) => c.id === data._id)) setChats([data, ...chats]);
 
@@ -133,8 +143,37 @@ const SideDrawer = () => {
         <div>
           <Menu>
             <MenuButton p={1}>
+              <NotificationBadge
+                count={notification.length}
+                effect={Effect.SCALE}
+              />
+
               <BellIcon fontSize={"2xl"} m="1" />
             </MenuButton>
+            <MenuList pl={2}>
+              {!notification.length && "No new Messages"}
+              {notification.map((notif) => {
+                return (
+                  <MenuItem
+                    key={notif._id}
+                    onClick={() => {
+                      setSelectedChat(notif.chat);
+                      setNotification(
+                        notification.filter((n) => {
+                          return n !== notif;
+                        })
+                      );
+                    }}
+                  >
+                    {notif.chat.isGroupChat
+                      ? `New Message in ${notif.chat.chatName}`
+                      : `New Message from ${getSender(user, notif.chat.users)}`}
+                  </MenuItem>
+                );
+              })}
+            </MenuList>
+          </Menu>
+          <Menu>
             <MenuButton as={Button} rightIcon={<ChevronDownIcon />}>
               <Avatar
                 size="sm"
@@ -176,15 +215,17 @@ const SideDrawer = () => {
             {loading ? (
               <ChatLoading />
             ) : (
-              searchResult.map((user) => (
-                <UserListItem
-                  key={user._id}
-                  user={user}
-                  handlefunction={() => {
-                    accessChat(user._id);
-                  }}
-                />
-              ))
+              searchResult.map((user) => {
+                return (
+                  <UserListItem
+                    key={user._id}
+                    user={user}
+                    handlefunction={() => {
+                      accessChat(user._id);
+                    }}
+                  />
+                );
+              })
             )}
             {loadingChat && <Spinner ml="auto" display={"flex"} />}
           </DrawerBody>

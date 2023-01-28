@@ -101,6 +101,7 @@ const UpdateGroupChatModal = (props) => {
       );
       user1._id === user._id ? setSelectedChat() : setSelectedChat(data);
       props.setFetchAgain(!props.fetchAgain);
+      props.fetchMessages();
       setLoading(false);
     } catch (error) {
       toast({
