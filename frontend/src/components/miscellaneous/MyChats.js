@@ -22,9 +22,8 @@ const MyChats = (props) => {
         },
       };
       const { data } = await axios.get("api/chat/", config);
-      console.log(data);
+
       setChats(data);
-      console.log(chats);
     } catch (error) {
       toast({
         title: "Error Occured",
@@ -39,7 +38,6 @@ const MyChats = (props) => {
   useEffect(() => {
     setLoggedUser(JSON.parse(localStorage.getItem("userInfo")));
     fetchChats();
-    console.log(chats);
   }, [props.fetchAgain]);
 
   return (

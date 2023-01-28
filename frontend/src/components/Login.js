@@ -49,7 +49,6 @@ const Login = () => {
         },
         config
       );
-      console.log(data);
       setloading(false);
       localStorage.setItem("userInfo", JSON.stringify(data));
       navigate("/chats");

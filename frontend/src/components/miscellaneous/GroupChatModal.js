@@ -68,7 +68,6 @@ const GroupChatModal = (props) => {
       const { data } = await axios.get(`/api/user/search?q=${search}`, config);
       setLoading(false);
       setSearchResults(data);
-      console.log(data);
     } catch (error) {
       toast({
         title: "Error Occured",

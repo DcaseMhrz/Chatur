@@ -45,7 +45,6 @@ const Signup = () => {
       setloading(false);
       return;
     }
-    console.log(name, email, password, pic);
     try {
       const config = {
         headers: {
@@ -62,7 +61,6 @@ const Signup = () => {
         },
         config
       );
-      console.log(data);
       setloading(false);
       navigate("/chats");
     } catch (error) {
@@ -102,7 +100,6 @@ const Signup = () => {
           setloading(false);
         })
         .catch((err) => {
-          console.log(err);
           setloading(false);
         });
     } else {
