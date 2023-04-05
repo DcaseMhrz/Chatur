@@ -75,7 +75,7 @@ const SideDrawer = () => {
           },
         };
         const { data } = await axios.get(
-          `${HOST}api/user/search?q=${search}`,
+          `${HOST}/api/user/search?q=${search}`,
           config
         );
         setLoading(false);
